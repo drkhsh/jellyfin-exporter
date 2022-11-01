@@ -41,6 +41,8 @@ class JellyfinCollector(object):
 
             sessions_count = 0
             streams_count = 0
+            streams_direct_count = 0
+            streams_transcode_count = 0
             sessions = GaugeMetricFamily(
                 'jellyfin_active_users', 'Jellyfin active user sessions', labels=['user', 'client', 'device_name', 'jellyfin_instance'])
             for user in sessions_data:
@@ -50,6 +52,14 @@ class JellyfinCollector(object):
 
                 if 'NowPlayingItem' in user:
                     streams_count += 1
+
+                    now_playing = user['NowPlayingItem']
+                    tc = now_playing['TranscodingInfo']
+                    if tc['IsVideoDirect'] == True:
+                        streams_direct_count += 1
+                    else:
+                        streams_transcode_count +=1
+
             yield sessions
 
             active = GaugeMetricFamily(
@@ -61,6 +71,16 @@ class JellyfinCollector(object):
                 'jellyfin_active_streams_count', 'Jellyfin active streams count', labels=['jellyfin_instance'])
             streams.add_metric([API_BASEURL], streams_count)
             yield streams
+
+            streams_direct = GaugeMetricFamily(
+                'jellyfin_active_streams_direct_count', 'Jellyfin active streams count (direct)', labels=['jellyfin_instance'])
+            streams_direct.add_metric([API_BASEURL], streams_direct_count)
+            yield streams_direct
+
+            streams_transcode = GaugeMetricFamily(
+                'jellyfin_active_streams_transcode_count', 'Jellyfin active streams count (transcode)', labels=['jellyfin_instance'])
+            streams_transcode.add_metric([API_BASEURL], streams_transcode_count)
+            yield streams_transcode
 
             items_counts_data = request_api('/Items/Counts')
 
