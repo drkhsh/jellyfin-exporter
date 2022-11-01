@@ -41,9 +41,10 @@ JELLYFIN_BASEURL=http://<jellyfin address>:<port> JELLYFIN_APIKEY=<apikey> ./.ve
 
 ## Exported Metrics
 
-Common:
+Common labels:
   - jellyfin_instance (`JELLYFIN_BASEURL`)
 
+General metrics:
 - jellyfin_active_users
 - jellyfin_active_users_count
 - jellyfin_active_streams_count
