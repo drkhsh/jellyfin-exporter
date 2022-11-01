@@ -47,6 +47,8 @@ Common:
 - jellyfin_active_users
 - jellyfin_active_users_count
 - jellyfin_active_streams_count
+- jellyfin_active_streams_direct_count
+- jellyfin_active_streams_transcode_count
 - jellyfin_item_counts
 - *More TBA.*
 
