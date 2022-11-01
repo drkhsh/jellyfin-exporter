@@ -54,11 +54,14 @@ class JellyfinCollector(object):
                     streams_count += 1
 
                     now_playing = user['NowPlayingItem']
-                    tc = now_playing['TranscodingInfo']
-                    if tc['IsVideoDirect'] == True:
-                        streams_direct_count += 1
+                    if 'TranscodingInfo' in now_playing:
+                        tc = now_playing['TranscodingInfo']
+                        if tc['IsVideoDirect'] == True:
+                            streams_direct_count += 1
+                        else:
+                            streams_transcode_count += 1
                     else:
-                        streams_transcode_count +=1
+                        streams_direct_count += 1
 
             yield sessions
 
