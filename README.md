@@ -15,14 +15,13 @@ This exporter is configured via environment variables:
 ### Using docker
 
 ```
-$ docker build -t jellyfin_exporter .
 $ docker run \
    -e JELLYFIN_BASEURL=http(s)://<jellyfin address>:<port> \
    -e JELLYFIN_APIKEY=<apikey> \
    -p 9027:9027 \
    -d --restart=always \
    -n jellyfin_exporter \
-   jellyfin_exporter
+   drkhsh/jellyfin-exporter:dev
 ```
 
 ### Using docker-compose

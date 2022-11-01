@@ -2,7 +2,7 @@ version: '3'
 
 services:
   jellyfin_exporter:
-    image: jellyfin-exporter
+    image: drkhsh/jellyfin-exporter:dev
     container_name: jellyfin_exporter
     ports:
       - 9027:9027
