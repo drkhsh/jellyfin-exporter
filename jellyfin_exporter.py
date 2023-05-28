@@ -85,28 +85,28 @@ class JellyfinCollector(object):
             metric_sessions_count_active.add_metric([API_BASEURL], sessions_count_active)
             yield metric_sessions_count_active
 
-            streams = GaugeMetricFamily(
+            metric_streams = GaugeMetricFamily(
                 'jellyfin_active_streams_count', 'Jellyfin active streams count', labels=['jellyfin_instance'])
-            streams.add_metric([API_BASEURL], streams_count)
-            yield streams
+            metric_streams.add_metric([API_BASEURL], streams_count)
+            yield metric_streams
 
-            streams_direct = GaugeMetricFamily(
+            metric_streams_direct = GaugeMetricFamily(
                 'jellyfin_active_streams_direct_count', 'Jellyfin active streams count (direct)', labels=['jellyfin_instance'])
-            streams_direct.add_metric([API_BASEURL], streams_direct_count)
-            yield streams_direct
+            metric_streams_direct.add_metric([API_BASEURL], streams_direct_count)
+            yield metric_streams_direct
 
-            streams_transcode = GaugeMetricFamily(
+            metric_streams_transcode = GaugeMetricFamily(
                 'jellyfin_active_streams_transcode_count', 'Jellyfin active streams count (transcode)', labels=['jellyfin_instance'])
-            streams_transcode.add_metric([API_BASEURL], streams_transcode_count)
-            yield streams_transcode
+            metric_streams_transcode.add_metric([API_BASEURL], streams_transcode_count)
+            yield metric_streams_transcode
 
             items_counts_data = request_api('/Items/Counts')
 
-            items_counts = GaugeMetricFamily(
+            metric_items_counts = GaugeMetricFamily(
                 'jellyfin_item_counts', 'Jellyfin items counts', labels=['type', 'jellyfin_instance'])
             for metric, val in items_counts_data.items():
-                items_counts.add_metric([metric, API_BASEURL], val)
-            yield items_counts
+                metric_items_counts.add_metric([metric, API_BASEURL], val)
+            yield metric_items_counts
 
         except Exception as ex:
             logging.error('Error getting metrics: %s', ex)
