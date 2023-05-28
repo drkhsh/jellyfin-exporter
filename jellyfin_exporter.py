@@ -102,6 +102,35 @@ class JellyfinCollector(object):
                 [API_BASEURL], sessions_count_active)
             yield metric_sessions_count_active
 
+            users_data = request_api('/Users')
+            users_data_disabled = request_api('/Users', {
+                "isDisabled": True
+            })
+
+            users_count = 0
+            users_count_disabled = 0
+
+            for user in users_data:
+                users_count += 1
+            for user in users_data_disabled:
+                users_count_disabled += 1
+
+            metric_users_count = GaugeMetricFamily(
+                'jellyfin_users_count',
+                'Jellyfin users count',
+                labels=['jellyfin_instance']
+            )
+            metric_users_count.add_metric([API_BASEURL], users_count)
+            yield metric_users_count
+
+            metric_users_count_disabled = GaugeMetricFamily(
+                'jellyfin_users_count_disabled',
+                'Jellyfin users count',
+                labels=['jellyfin_instance']
+            )
+            metric_users_count_disabled.add_metric([API_BASEURL], users_count_disabled)
+            yield metric_users_count_disabled
+
             metric_streams = GaugeMetricFamily(
                 'jellyfin_active_streams_count',
                 'Jellyfin active streams count',
