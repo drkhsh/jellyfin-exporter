@@ -44,8 +44,9 @@ Common labels:
   - jellyfin_instance (`JELLYFIN_BASEURL`)
 
 General metrics:
-- jellyfin_active_users
-- jellyfin_active_users_count
+- jellyfin_sessions
+- jellyfin_sessions_count
+- jellyfin_sessions_count_active
 - jellyfin_active_streams_count
 - jellyfin_active_streams_direct_count
 - jellyfin_active_streams_transcode_count

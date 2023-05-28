@@ -5,6 +5,7 @@ import threading
 import logging
 
 import requests
+from datetime import datetime, timedelta, timezone
 from prometheus_client import start_http_server
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
 
@@ -42,15 +43,22 @@ class JellyfinCollector(object):
             sessions_data = request_api('/Sessions')
 
             sessions_count = 0
+            sessions_count_active = 0
             streams_count = 0
             streams_direct_count = 0
             streams_transcode_count = 0
-            sessions = GaugeMetricFamily(
-                'jellyfin_active_users', 'Jellyfin active user sessions', labels=['user', 'client', 'device_name', 'jellyfin_instance'])
+
+            metric_sessions = GaugeMetricFamily(
+                'jellyfin_sessions', 'Jellyfin user sessions', labels=['user', 'client', 'device_name', 'jellyfin_instance'])
+
             for user in sessions_data:
                 if user['IsActive'] == True:
-                    sessions.add_metric([user['UserName'], user['Client'], user['DeviceName'], API_BASEURL], 1)
+                    metric_sessions.add_metric([user['UserName'], user['Client'], user['DeviceName'], API_BASEURL], 1)
                     sessions_count += 1
+
+                    last_active = datetime.fromisoformat(user["LastActivityDate"])
+                    if last_active > datetime.now(timezone.utc) - timedelta(minutes=5):
+                        sessions_count_active += 1
 
                 if 'NowPlayingItem' in user:
                     streams_count += 1
@@ -65,12 +73,17 @@ class JellyfinCollector(object):
                     else:
                         streams_direct_count += 1
 
-            yield sessions
+            yield metric_sessions
 
-            active = GaugeMetricFamily(
-                'jellyfin_active_users_count', 'Jellyfin active user count', labels=['jellyfin_instance'])
-            active.add_metric([API_BASEURL], sessions_count)
-            yield active
+            metric_sessions_count = GaugeMetricFamily(
+                'jellyfin_sessions_count', 'Jellyfin user sessions count', labels=['jellyfin_instance'])
+            metric_sessions_count.add_metric([API_BASEURL], sessions_count)
+            yield metric_sessions_count
+
+            metric_sessions_count_active = GaugeMetricFamily(
+                'jellyfin_sessions_count_active', 'Jellyfin active user sessions count', labels=['jellyfin_instance'])
+            metric_sessions_count_active.add_metric([API_BASEURL], sessions_count_active)
+            yield metric_sessions_count_active
 
             streams = GaugeMetricFamily(
                 'jellyfin_active_streams_count', 'Jellyfin active streams count', labels=['jellyfin_instance'])
