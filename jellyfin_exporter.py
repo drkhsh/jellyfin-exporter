@@ -34,8 +34,8 @@ def request_api(action, p = {}):
     start = time.time()
     data = requests.get(url, params).json()
     elapsed = time.time() - start
-    logging.info("Request to %s returned in %s",
-                url, elapsed)
+    logging.info("Request to %s (%s) returned in %s",
+                url, p, elapsed)
     return data
 
 class JellyfinCollector(object):
