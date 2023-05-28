@@ -91,12 +91,12 @@ class JellyfinCollector(object):
             yield metric_streams
 
             metric_streams_direct = GaugeMetricFamily(
-                'jellyfin_active_streams_direct_count', 'Jellyfin active streams count (direct)', labels=['jellyfin_instance'])
+                'jellyfin_active_streams_count_direct', 'Jellyfin active streams count (direct)', labels=['jellyfin_instance'])
             metric_streams_direct.add_metric([API_BASEURL], streams_direct_count)
             yield metric_streams_direct
 
             metric_streams_transcode = GaugeMetricFamily(
-                'jellyfin_active_streams_transcode_count', 'Jellyfin active streams count (transcode)', labels=['jellyfin_instance'])
+                'jellyfin_active_streams_count_transcode', 'Jellyfin active streams count (transcode)', labels=['jellyfin_instance'])
             metric_streams_transcode.add_metric([API_BASEURL], streams_transcode_count)
             yield metric_streams_transcode
 

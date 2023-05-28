@@ -48,8 +48,8 @@ General metrics:
 - jellyfin_sessions_count
 - jellyfin_sessions_count_active
 - jellyfin_active_streams_count
-- jellyfin_active_streams_direct_count
-- jellyfin_active_streams_transcode_count
+- jellyfin_active_streams_count_direct
+- jellyfin_active_streams_count_transcode
 - jellyfin_item_counts
 - *More TBA.*
 
