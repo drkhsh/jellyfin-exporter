@@ -24,7 +24,8 @@ if API_KEY == '':
     logging.error("JELLYFIN_APIKEY environment variable is required.")
     sys.exit(1)
 
-logging.info("Starting jellyfin_exporter for '%s' on port: %d", str(API_BASEURL), PORT)
+logging.info("Starting jellyfin_exporter for '%s' on port: %d",
+             str(API_BASEURL), PORT)
 
 def request_api(action, p = {}):
     url = '{}{}'.format(API_BASEURL, action)
@@ -49,11 +50,20 @@ class JellyfinCollector(object):
             streams_transcode_count = 0
 
             metric_sessions = GaugeMetricFamily(
-                'jellyfin_sessions', 'Jellyfin user sessions', labels=['user', 'client', 'device_name', 'jellyfin_instance'])
+                'jellyfin_sessions',
+                'Jellyfin user sessions',
+                labels=['user', 'client', 'device_name', 'jellyfin_instance']
+            )
 
             for user in sessions_data:
                 if user['IsActive'] == True:
-                    metric_sessions.add_metric([user['UserName'], user['Client'], user['DeviceName'], API_BASEURL], 1)
+                    metric_sessions.add_metric(
+                        [user['UserName'],
+                         user['Client'],
+                         user['DeviceName'],
+                         API_BASEURL],
+                         1
+                    )
                     sessions_count += 1
 
                     last_active = datetime.fromisoformat(user["LastActivityDate"])
@@ -76,34 +86,55 @@ class JellyfinCollector(object):
             yield metric_sessions
 
             metric_sessions_count = GaugeMetricFamily(
-                'jellyfin_sessions_count', 'Jellyfin user sessions count', labels=['jellyfin_instance'])
+                'jellyfin_sessions_count',
+                'Jellyfin user sessions count',
+                labels=['jellyfin_instance']
+            )
             metric_sessions_count.add_metric([API_BASEURL], sessions_count)
             yield metric_sessions_count
 
             metric_sessions_count_active = GaugeMetricFamily(
-                'jellyfin_sessions_count_active', 'Jellyfin active user sessions count', labels=['jellyfin_instance'])
-            metric_sessions_count_active.add_metric([API_BASEURL], sessions_count_active)
+                'jellyfin_sessions_count_active',
+                'Jellyfin active user sessions count',
+                labels=['jellyfin_instance']
+            )
+            metric_sessions_count_active.add_metric(
+                [API_BASEURL], sessions_count_active)
             yield metric_sessions_count_active
 
             metric_streams = GaugeMetricFamily(
-                'jellyfin_active_streams_count', 'Jellyfin active streams count', labels=['jellyfin_instance'])
+                'jellyfin_active_streams_count',
+                'Jellyfin active streams count',
+                labels=['jellyfin_instance']
+            )
             metric_streams.add_metric([API_BASEURL], streams_count)
             yield metric_streams
 
             metric_streams_direct = GaugeMetricFamily(
-                'jellyfin_active_streams_count_direct', 'Jellyfin active streams count (direct)', labels=['jellyfin_instance'])
-            metric_streams_direct.add_metric([API_BASEURL], streams_direct_count)
+                'jellyfin_active_streams_count_direct',
+                'Jellyfin active streams count (direct)',
+                labels=['jellyfin_instance']
+            )
+            metric_streams_direct.add_metric(
+                [API_BASEURL], streams_direct_count)
             yield metric_streams_direct
 
             metric_streams_transcode = GaugeMetricFamily(
-                'jellyfin_active_streams_count_transcode', 'Jellyfin active streams count (transcode)', labels=['jellyfin_instance'])
-            metric_streams_transcode.add_metric([API_BASEURL], streams_transcode_count)
+                'jellyfin_active_streams_count_transcode',
+                'Jellyfin active streams count (transcode)',
+                labels=['jellyfin_instance']
+            )
+            metric_streams_transcode.add_metric(
+                [API_BASEURL], streams_transcode_count)
             yield metric_streams_transcode
 
             items_counts_data = request_api('/Items/Counts')
 
             metric_items_counts = GaugeMetricFamily(
-                'jellyfin_item_counts', 'Jellyfin items counts', labels=['type', 'jellyfin_instance'])
+                'jellyfin_item_counts',
+                'Jellyfin items counts',
+                labels=['type', 'jellyfin_instance']
+            )
             for metric, val in items_counts_data.items():
                 metric_items_counts.add_metric([metric, API_BASEURL], val)
             yield metric_items_counts

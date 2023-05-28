@@ -1,6 +1,7 @@
 # jellyfin-exporter
 
-This is a Prometheus (https://prometheus.io) metrics exporter for Jellyfin (https://jellyfin.org).
+This is a Prometheus (https://prometheus.io) metrics exporter for Jellyfin
+(https://jellyfin.org).
 
 ## Configuration
 
@@ -8,7 +9,8 @@ This exporter is configured via environment variables:
 
 - `JELLYFIN_BASEURL`: Jellyfin server address (**required**)
 - `JELLYFIN_APIKEY`: Jellyfin API key (**required**)
-- `JELLYFIN_EXPORTER_PORT`: The port on which the exporter listens (default `9027`)
+- `JELLYFIN_EXPORTER_PORT`: The port on which the exporter listens
+  (default `9027`)
 
 ## Running
 
@@ -31,11 +33,13 @@ See [docker-compose file](docker-compose.yml).
 ### Manually
 
 1. Create a new python virtual environment: `python3 -m venv .venv`
-2. Install required modules into your venv: `./.venv/bin/pip3 install -r requirements.txt`
+2. Install required modules into your venv:
+   `./.venv/bin/pip3 install -r requirements.txt`
 3. Start the exporter:
 
 ```
-JELLYFIN_BASEURL=http://<jellyfin address>:<port> JELLYFIN_APIKEY=<apikey> ./.venv/bin/python3 jellyfin_exporter.py
+JELLYFIN_BASEURL=http://<jellyfin address>:<port> JELLYFIN_APIKEY=<apikey> \
+	./.venv/bin/python3 jellyfin_exporter.py
 ```
 
 ## Exported Metrics
