@@ -25,10 +25,12 @@ if API_KEY == '':
 
 logging.info("Starting jellyfin_exporter for '%s' on port: %d", str(API_BASEURL), PORT)
 
-def request_api(action):
-    url = '{}{}?api_key={}'.format(API_BASEURL, action, API_KEY)
+def request_api(action, p = {}):
+    url = '{}{}'.format(API_BASEURL, action)
+    params = p
+    params["api_key"] = API_KEY
     start = time.time()
-    data = requests.get(url).json()
+    data = requests.get(url, params).json()
     elapsed = time.time() - start
     logging.info("Request to %s returned in %s",
                 url, elapsed)
