@@ -52,7 +52,8 @@ class JellyfinCollector(object):
             metric_sessions = GaugeMetricFamily(
                 'jellyfin_sessions',
                 'Jellyfin user sessions',
-                labels=['user', 'client', 'device_name', 'jellyfin_instance']
+                labels=['user', 'client', 'device_name', 'last_active',
+                        'jellyfin_instance']
             )
 
             for user in sessions_data:
@@ -61,6 +62,7 @@ class JellyfinCollector(object):
                         [user['UserName'],
                          user['Client'],
                          user['DeviceName'],
+                         user["LastActivityDate"],
                          API_BASEURL],
                          1
                     )
