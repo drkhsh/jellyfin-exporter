@@ -30,6 +30,14 @@ $ docker run \
 
 See [docker-compose file](docker-compose.yml).
 
+### Using package manager
+
+Install dependencies, e.g. using:
+
+```
+# apt install python3-prometheus-client
+```
+
 ### Manually
 
 1. Create a new python virtual environment: `python3 -m venv .venv`
@@ -41,6 +49,11 @@ See [docker-compose file](docker-compose.yml).
 JELLYFIN_BASEURL=http://<jellyfin address>:<port> JELLYFIN_APIKEY=<apikey> \
 	./.venv/bin/python3 jellyfin_exporter.py
 ```
+
+### systemd service
+
+see `jellyfin-exporter.service` in *contrib* directory.
+change the environment vars accordingly in a service override
 
 ## Exported Metrics
 
@@ -55,5 +68,3 @@ General metrics:
 - jellyfin_active_streams_count_direct
 - jellyfin_active_streams_count_transcode
 - jellyfin_item_counts
-- *More TBA.*
-
