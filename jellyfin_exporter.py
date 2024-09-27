@@ -18,7 +18,7 @@ logging.basicConfig(format = '%(asctime)s %(levelname)s %(message)s',
                     level = logging.INFO,
                     datefmt = '%Y-%m-%d %H:%M:%S')
 
-if API_BASEURL == '': 
+if API_BASEURL == '':
     logging.error("JELLYFIN_BASEURL environment variable is required.")
     sys.exit(1)
 if API_KEY == '':
