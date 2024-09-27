@@ -57,21 +57,38 @@ class JellyfinCollector(object):
                         'jellyfin_instance']
             )
 
-            for user in sessions_data:
-                if user['IsActive'] == True:
-                    metric_sessions.add_metric(
-                        [user['UserName'],
-                         user['Client'],
-                         user['DeviceName'],
-                         user["LastActivityDate"],
-                         API_BASEURL],
-                         1
-                    )
-                    sessions_count += 1
+            metric_streams = GaugeMetricFamily(
+                'jellyfin_streams',
+                'Jellyfin user streams',
+                labels=['user', 'client', 'device_name', 'play_name', 'path',
+                        'run_time_ticks', 'container', 'video_display_title',
+                        'bit_rate', 'bit_depth', 'color_space',
+                        'audio_display_title', "is_paused",
+                        "is_muted", "volume_level", "play_method",
+                        'jellyfin_instance']
+            )
 
-                    last_active = datetime.fromisoformat(user["LastActivityDate"])
-                    if last_active > datetime.now(timezone.utc) - timedelta(minutes=5):
-                        sessions_count_active += 1
+            for user in sessions_data:
+                now_playing_name = ""
+                path = ""
+                run_time_ticks = 0
+                container = ""
+                video_display_title = ""
+                bit_rate = 0
+                bit_depth = 0
+                color_space = ""
+                audio_display_title = ""
+                play_state = user.get("PlayState", None)
+                playing_position_ms = 0
+                is_paused = False
+                is_muted = False
+                volume_level = 0
+                play_method = ""
+
+                if user.get("UserName", None) is None:
+                    continue
+
+                sessions_count += 1
 
                 if 'NowPlayingItem' in user:
                     streams_count += 1
@@ -86,6 +103,62 @@ class JellyfinCollector(object):
                     else:
                         streams_direct_count += 1
 
+                    now_playing_name = now_playing.get("Name", "")
+                    path = now_playing.get("Path", "")
+                    run_time_ticks = now_playing.get("RunTimeTicks", 0)
+                    container = now_playing.get("Container", "")
+                    if len(now_playing.get("MediaStreams", [])) > 1:
+                        video_display_title = now_playing.get("MediaStreams", [])[0].get("DisplayTitle", "")
+                        bit_rate = now_playing.get("MediaStreams", [])[0].get("BitRate", 0)
+                        bit_depth = now_playing.get("MediaStreams", [])[0].get("BitDepth", 0)
+                        color_space = now_playing.get("MediaStreams", [])[0].get("ColorSpace", "")
+                        audio_display_title = now_playing.get("MediaStreams", [])[1].get("DisplayTitle", "")
+
+                    play_state = user.get("PlayState", None)
+                    if play_state is not None:
+                        playing_position_ms = play_state.get("PositionTicks", 0)
+                        is_paused = play_state.get("IsPaused", False)
+                        is_muted = play_state.get("IsMuted", False)
+                        volume_level = play_state.get("VolumeLevel", 0)
+                        play_method = play_state.get("PlayMethod", "")
+
+                    metric_streams.add_metric(
+                        [user['UserName'],
+                         user['Client'],
+                         user['DeviceName'],
+                         now_playing_name,
+                         path,
+                         str(run_time_ticks),
+                         container,
+                         video_display_title,
+                         str(bit_rate),
+                         str(bit_depth),
+                         color_space,
+                         audio_display_title,
+                         str(playing_position_ms),
+                         str(is_paused),
+                         str(is_muted),
+                         str(volume_level),
+                         play_method,
+                         API_BASEURL],
+                         1
+                    )
+
+                if user['IsActive'] == True:
+                    last_active = datetime.fromisoformat(user["LastActivityDate"])
+                    if last_active > datetime.now(timezone.utc) - timedelta(minutes=60):
+                        sessions_count_active += 1
+
+                        metric_sessions.add_metric(
+                            [user['UserName'],
+                             user['Client'],
+                             user['DeviceName'],
+                             user["LastActivityDate"],
+                             API_BASEURL],
+                             1
+                        )
+
+            yield metric_streams
             yield metric_sessions
 
             metric_sessions_count = GaugeMetricFamily(
