@@ -1,0 +1,16 @@
+[Unit]
+Description=Jellyfin metrics exporter
+After=network.target jellyfin.service
+Wants=network.target jellyfin.service
+
+[Service]
+User=jellyfin
+Group=jellyfin
+Type=simple
+ExecStart=/usr/local/bin/jellyfin_exporter.py
+Restart=on-failure
+Environment=JELLYFIN_BASEURL=http://localhost:8096
+Environment=JELLYFIN_APIKEY=CHANGEME
+
+[Install]
+WantedBy=multi-user.target
