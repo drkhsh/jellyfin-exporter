@@ -94,8 +94,8 @@ class JellyfinCollector(object):
                     streams_count += 1
 
                     now_playing = user['NowPlayingItem']
-                    if 'TranscodingInfo' in now_playing:
-                        tc = now_playing['TranscodingInfo']
+                    if 'TranscodingInfo' in user:
+                        tc = user['TranscodingInfo']
                         if tc['IsVideoDirect'] == True:
                             streams_direct_count += 1
                         else:
