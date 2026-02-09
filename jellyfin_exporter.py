@@ -33,7 +33,7 @@ def request_api(action, p=None):
     params = dict(p) if p else {}
     params["api_key"] = API_KEY
     start = time.time()
-    data = requests.get(url, params).json()
+    data = requests.get(url, params, timeout=10).json()
     elapsed = time.time() - start
     logging.info("Request to %s (%s) returned in %s",
                 url, p, elapsed)
