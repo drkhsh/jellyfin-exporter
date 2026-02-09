@@ -12,6 +12,10 @@ This exporter is configured via environment variables:
 - `JELLYFIN_EXPORTER_PORT`: The port on which the exporter listens
   (default `9027`)
 
+Authentication uses the `Authorization: MediaBrowser Token="<key>"` header.
+The legacy `api_key` query parameter was removed in v1.2.0 to prepare for
+Jellyfin 12.0 which drops support for it.
+
 ## Running
 
 ### Using docker
@@ -23,7 +27,7 @@ $ docker run \
    -p 9027:9027 \
    -d --restart=always \
    -n jellyfin_exporter \
-   drkhsh/jellyfin-exporter:dev
+   drkhsh/jellyfin-exporter:latest
 ```
 
 ### Using docker-compose
@@ -55,16 +59,28 @@ JELLYFIN_BASEURL=http://<jellyfin address>:<port> JELLYFIN_APIKEY=<apikey> \
 see `jellyfin-exporter.service` in *contrib* directory.
 change the environment vars accordingly in a service override
 
+## Prometheus scrape config
+
+```yaml
+scrape_configs:
+  - job_name: jellyfin
+    static_configs:
+      - targets: ['localhost:9027']
+```
+
 ## Exported Metrics
 
 Common labels:
   - jellyfin_instance (`JELLYFIN_BASEURL`)
 
 General metrics:
+- jellyfin_up
 - jellyfin_streams
 - jellyfin_sessions
 - jellyfin_sessions_count
 - jellyfin_sessions_count_active
+- jellyfin_users_count
+- jellyfin_users_count_disabled
 - jellyfin_active_streams_count
 - jellyfin_active_streams_count_direct
 - jellyfin_active_streams_count_transcode
