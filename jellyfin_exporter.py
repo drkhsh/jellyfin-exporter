@@ -207,13 +207,13 @@ class JellyfinCollector(object):
             metric_users_count_disabled.add_metric([API_BASEURL], users_count_disabled)
             yield metric_users_count_disabled
 
-            metric_streams = GaugeMetricFamily(
+            metric_active_streams_count = GaugeMetricFamily(
                 'jellyfin_active_streams_count',
                 'Jellyfin active streams count',
                 labels=['jellyfin_instance']
             )
-            metric_streams.add_metric([API_BASEURL], streams_count)
-            yield metric_streams
+            metric_active_streams_count.add_metric([API_BASEURL], streams_count)
+            yield metric_active_streams_count
 
             metric_streams_direct = GaugeMetricFamily(
                 'jellyfin_active_streams_count_direct',
