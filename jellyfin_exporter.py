@@ -96,7 +96,7 @@ class JellyfinCollector(object):
                     now_playing = user['NowPlayingItem']
                     if 'TranscodingInfo' in user:
                         tc = user['TranscodingInfo']
-                        if tc['IsVideoDirect'] == True:
+                        if tc.get('IsVideoDirect', True) == True:
                             streams_direct_count += 1
                         else:
                             streams_transcode_count += 1
@@ -123,9 +123,9 @@ class JellyfinCollector(object):
                         play_method = play_state.get("PlayMethod", "")
 
                     metric_streams.add_metric(
-                        [user['UserName'],
-                         user['Client'],
-                         user['DeviceName'],
+                        [user.get('UserName', ''),
+                         user.get('Client', ''),
+                         user.get('DeviceName', ''),
                          now_playing_name,
                          path,
                          str(run_time_ticks),
@@ -144,7 +144,7 @@ class JellyfinCollector(object):
                          1
                     )
 
-                if user['IsActive'] == True:
+                if user.get('IsActive', False) == True:
                     last_active = datetime.fromisoformat(user["LastActivityDate"])
                     if last_active > datetime.now(timezone.utc) - timedelta(minutes=60):
                         sessions_count_active += 1
