@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 from prometheus_client import start_http_server
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
 
-PORT = os.getenv('JELLYFIN_EXPORTER_PORT', 9027)
+PORT = int(os.getenv('JELLYFIN_EXPORTER_PORT', 9027))
 API_BASEURL = os.getenv('JELLYFIN_BASEURL', '')
 API_KEY = os.getenv('JELLYFIN_APIKEY', '')
 
