@@ -244,8 +244,24 @@ class JellyfinCollector(object):
                 metric_items_counts.add_metric([metric, API_BASEURL], val)
             yield metric_items_counts
 
+            metric_up = GaugeMetricFamily(
+                'jellyfin_up',
+                'Whether the Jellyfin server is reachable',
+                labels=['jellyfin_instance']
+            )
+            metric_up.add_metric([API_BASEURL], 1)
+            yield metric_up
+
         except Exception as ex:
             logging.error('Error getting metrics: %s', ex)
+
+            metric_up = GaugeMetricFamily(
+                'jellyfin_up',
+                'Whether the Jellyfin server is reachable',
+                labels=['jellyfin_instance']
+            )
+            metric_up.add_metric([API_BASEURL], 0)
+            yield metric_up
 
 REGISTRY.register(JellyfinCollector())
 start_http_server(PORT)
