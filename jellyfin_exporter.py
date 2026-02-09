@@ -31,9 +31,9 @@ logging.info("Starting jellyfin_exporter for '%s' on port: %d",
 def request_api(action, p=None):
     url = '{}{}'.format(API_BASEURL, action)
     params = dict(p) if p else {}
-    params["api_key"] = API_KEY
+    headers = {"Authorization": 'MediaBrowser Token="{}"'.format(API_KEY)}
     start = time.time()
-    data = requests.get(url, params, timeout=10).json()
+    data = requests.get(url, params, headers=headers, timeout=10).json()
     elapsed = time.time() - start
     logging.info("Request to %s (%s) returned in %s",
                 url, p, elapsed)
